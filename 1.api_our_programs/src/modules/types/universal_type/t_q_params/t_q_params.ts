@@ -4,6 +4,6 @@
  */
 
 export type t_q_params={
-        q_search_country:string|undefined,
-        q_search:string|undefined
+        q_search_country?:string,
+        q_search?:string
       }

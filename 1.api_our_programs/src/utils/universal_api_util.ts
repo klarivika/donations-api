@@ -1,16 +1,16 @@
 import { e_status_code } from "../modules/enum"
 import { t_q_params ,t_deep_search2,t_deep_search} from "../modules/types"
-import { ParsedQs } from "qs"
+
 
 
 export class Universal_api_util{
-     static get_queries_params=({query}:{query:ParsedQs})=>{
+     static get_queries_params=({query}:{query:Record<string,string>})=>{
         const {
             q_search_country,
             q_search}=query 
             const q_params:t_q_params={
-                    q_search_country:q_search_country?String(q_search_country):undefined,
-                    q_search:q_search?String(q_search):undefined
+                    q_search_country,
+                    q_search
             }
             return q_params
       }
@@ -95,7 +95,7 @@ export class Universal_api_util{
                   //? jika pengecekkan object ditaruh dipaling atas maka dia akan menyebabkan infinite loop karena object di konversi sebagai array lalu di cek di pengecekan object lagi tanpa henti karena array adalah object juga
                   if(typeof data ==='object'&&data!=null){
                  
-                        const data_object=Object.entries(data as Record<string,any>)
+                        const data_arrays=Object.entries(data as Record<string,any>)
                         .reduce((acc,[key,value])=>{
                               if(skiping_field.length>0){
                                     // todo: kalau skipping field tidak kosong maka buang fieldnya
@@ -125,21 +125,18 @@ export class Universal_api_util{
 
                               if (typeof valueEntry === 'object' && valueEntry !== null && 'k' in valueEntry) {
                                    
-                                    const actualValue = data_object[valueEntry.k];
+                                    const actualValue = data_arrays[valueEntry.k];
                                     if (actualValue === undefined) return false;
 
                                     if (valueEntry.k === 'id') {
                                           return actualValue.toString() === valueEntry.v.toString();
                                     }
-                                    //? kenapa programnya lari ke sini???
-                                    //?valueEntry: { k: 'country_name', v: 'e' },
-                                    //  console.log(valueEntry)
                                     return actualValue.toString().toLowerCase().includes(valueEntry.v.toString().toLowerCase());
                               }
 
                               
                               if(typeof keyEntry !== "number" || typeof keyEntry !== "string")return false
-                              const actualValue = data_object[keyEntry];
+                              const actualValue = data_arrays[keyEntry];
                               if (actualValue === undefined) return false;
 
                               if (keyEntry === 'id') {
