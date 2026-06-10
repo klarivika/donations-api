@@ -42,14 +42,15 @@ export default defineEventHandler(async (event) => {
 
     if (!createdAt || currentRequests === 1) {
       createdAt = Date.now()
-      await storage.setItem(windowMetaKey, createdAt, { ttl: WINDOW_MS / 1000 })
+      await storage.setItem(windowMetaKey, createdAt, { ttl: Math.ceil(WINDOW_MS / 1000) })
     }
 
     const timePassed = Date.now() - createdAt
     const remainingTTL = Math.max(0, WINDOW_MS - timePassed)
+    const ttlSeconds = Math.max(1, Math.ceil(remainingTTL / 1000))
 
-    // Set item ke storage (Memory / Redis Upstash) dengan sisa TTL presisi
-    await storage.setItem(cacheKey, currentRequests, { ttl: remainingTTL / 1000 })
+    // Set item ke storage (Memory / Redis Upstash) — TTL harus integer detik untuk Redis EXPIRE
+    await storage.setItem(cacheKey, currentRequests, { ttl: ttlSeconds })
 
     // Kirim informasi rate limit di header respons
     setResponseHeaders(event, {
