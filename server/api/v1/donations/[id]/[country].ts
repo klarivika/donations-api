@@ -13,9 +13,14 @@ export default defineEventHandler(async(event) => {
   const q_params = await getValidatedQuery(event, (data)=>query_schema.parse(data))
   const id = getRouterParam(event, 'id')
   const country = getRouterParam(event, 'country')
-  const data=controller.Show({country:country!,id:id!,status({ status_number }) {
-      
-  },q_params})
+  const data=controller.Show({
+    country: country!,
+    id: id!,
+    status({ status_number }) {
+      setResponseStatus(event, Number(status_number))
+    },
+    q_params
+  })
 
   return  data
 })

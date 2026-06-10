@@ -11,10 +11,13 @@ const query_schema=z.object({
 
 export default defineEventHandler(async(event) => {
   const q_params = await getValidatedQuery(event, (data)=>query_schema.parse(data))
-  const data=controller.Index({status({ status_number }) {
-     
-  },q_params})
+  const data=controller.Index({
+    status({ status_number }) {
+      setResponseStatus(event, Number(status_number))
+    },
+    q_params
+  })
 
-  return  data
+  return data
 })
 
