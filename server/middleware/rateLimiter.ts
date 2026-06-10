@@ -1,21 +1,19 @@
-const MAX_REQUESTS = 90 // Maksimal request
-const WINDOW_MS = 60 * 1000 // Per 1 menit
+const MAX_REQUESTS = 90 
+const WINDOW_MS = 60 * 1000 
 
 export default defineEventHandler(async (event) => {
   const req = event.node.req
 
   if (req.url?.startsWith('/api')) {
-    // Ambil storage 'cache' yang sudah dikonfigurasi di nuxt.config
     const storage = useStorage('cache')
     
-    // Deteksi IP User di Netlify
+    const forwardedFor = req.headers['x-forwarded-for'] as string
     const ip = req.headers['x-nf-client-connection-ip'] || 
-               req.headers['x-forwarded-for'] || 
+               (forwardedFor ? forwardedFor.split(',')[0]?.trim() : null) || 
                'anonymous'
                
     const cacheKey = `ratelimit:${ip}`
 
-    // Ambil data request saat ini dari Redis
     let currentRequests = (await storage.getItem(cacheKey) as number) || 0
 
     if (currentRequests >= MAX_REQUESTS) {
@@ -26,16 +24,27 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Naikkan angka request
     currentRequests++
     
-    // Simpan ke Redis dengan waktu kedaluwarsa (TTL) sesuai WINDOW_MS
-    await storage.setItem(cacheKey, currentRequests, { ttl: WINDOW_MS / 1000 })
+    // Mengamankan masalah Sliding Window TTL
+    // Kita simpan timestamp kapan window ini pertama kali dibuat
+    const windowMetaKey = `ratelimit:meta:${ip}`
+    let createdAt = (await storage.getItem(windowMetaKey) as number)
 
-    // Set Header info
+    if (!createdAt || currentRequests === 1) {
+      createdAt = Date.now()
+      await storage.setItem(windowMetaKey, createdAt, { ttl: WINDOW_MS / 1000 })
+    }
+
+    const timePassed = Date.now() - createdAt
+    const remainingTTL = Math.max(0, WINDOW_MS - timePassed)
+
+    // Set item dengan sisa TTL yang presisi
+    await storage.setItem(cacheKey, currentRequests, { ttl: remainingTTL / 1000 })
+
     setResponseHeaders(event, {
       'X-RateLimit-Limit': MAX_REQUESTS.toString(),
-      'X-RateLimit-Remaining': (MAX_REQUESTS - currentRequests).toString(),
+      'X-RateLimit-Remaining': Math.max(0, MAX_REQUESTS - currentRequests).toString(),
     })
   }
 })

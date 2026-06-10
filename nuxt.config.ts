@@ -1,4 +1,11 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { useRuntimeConfig } from "nuxt/app"
+
+// https://nuxt.com/docs/api/configuration/nuxt-config'
+const config = useRuntimeConfig()
+
+// Gunakan nilainya untuk koneksi Redis
+const redisUrl = config.redisUrl
+const redisToken = config.redisToken
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
