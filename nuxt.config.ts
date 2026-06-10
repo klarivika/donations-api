@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     redisToken: process.env.REDIS_TOKEN
   },
   nitro: {
-    preset: process.env.NITRO_PRESET || (process.env.NETLIFY ? 'netlify' : undefined),
+    preset: process.env.NITRO_PRESET || (process.env.NETLIFY ? 'netlify' : 'cloudflare-pages'),
     devStorage: {
       // Saat posisi development (lokal), pakai memori komputer saja
       cache: {
