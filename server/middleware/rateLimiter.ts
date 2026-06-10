@@ -1,12 +1,22 @@
+// server/middleware/rateLimiter.ts
+
 const MAX_REQUESTS = 90 
 const WINDOW_MS = 60 * 1000 
 
 export default defineEventHandler(async (event) => {
   const req = event.node.req
 
+  // Hanya jalankan rate limiter jika request mengarah ke endpoint /api
   if (req.url?.startsWith('/api')) {
+    
+    // Membaca runtime config yang sudah didaftarkan di nuxt.config.ts tadi
+    const config = useRuntimeConfig()
+    const redisUrl = config.redisUrl
+    const redisToken = config.redisToken
+
     const storage = useStorage('cache')
     
+    // Mengambil IP Address Client di lingkungan Netlify / Reverse Proxy
     const forwardedFor = req.headers['x-forwarded-for'] as string
     const ip = req.headers['x-nf-client-connection-ip'] || 
                (forwardedFor ? forwardedFor.split(',')[0]?.trim() : null) || 
@@ -26,8 +36,7 @@ export default defineEventHandler(async (event) => {
 
     currentRequests++
     
-    // Mengamankan masalah Sliding Window TTL
-    // Kita simpan timestamp kapan window ini pertama kali dibuat
+    // Logika Mengamankan Sliding Window TTL
     const windowMetaKey = `ratelimit:meta:${ip}`
     let createdAt = (await storage.getItem(windowMetaKey) as number)
 
@@ -39,9 +48,10 @@ export default defineEventHandler(async (event) => {
     const timePassed = Date.now() - createdAt
     const remainingTTL = Math.max(0, WINDOW_MS - timePassed)
 
-    // Set item dengan sisa TTL yang presisi
+    // Set item ke storage (Memory / Redis Upstash) dengan sisa TTL presisi
     await storage.setItem(cacheKey, currentRequests, { ttl: remainingTTL / 1000 })
 
+    // Kirim informasi rate limit di header respons
     setResponseHeaders(event, {
       'X-RateLimit-Limit': MAX_REQUESTS.toString(),
       'X-RateLimit-Remaining': Math.max(0, MAX_REQUESTS - currentRequests).toString(),
