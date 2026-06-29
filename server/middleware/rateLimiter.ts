@@ -1,6 +1,6 @@
 // server/middleware/rateLimiter.ts
 
-const MAX_REQUESTS = 90 
+const MAX_REQUESTS = 190 
 const WINDOW_MS = 60 * 1000 
 
 export default defineEventHandler(async (event) => {

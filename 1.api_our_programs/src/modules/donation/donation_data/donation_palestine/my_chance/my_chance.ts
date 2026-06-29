@@ -2,7 +2,7 @@ import { e_data_citizen } from "../../../../enum";
 import { t_donation_data_member,t_donation_data_profile } from "../../../../types";
 
 const data_profile:t_donation_data_profile={
-        name:"my chance | Shafic Bwanika",
+        name:"my chance | Life with out cancer",
         story:`Please donate to save my life and get treatment 🙏🙏🍉🍉👇👇`,
         youtube_channel:{
                 src:"https://www.youtube.com/@Mycance/shorts"
@@ -15,6 +15,7 @@ const data_profile:t_donation_data_profile={
         links:[
                 
                 {name:e_data_citizen.paypal,url:"https://www.paypal.com/donate/?hosted_button_id=VPBJRA7K763B8"},
+                {name:e_data_citizen.go_fund_me,url:"https://www.gofundme.com/f/kids-with-cancer-9usdy?attribution_id=sl:b56eafea-020e-4c99-9807-0ecddc0efc0d&ts=1781374048&utm_campaign=natman_sharesheet_dash&utm_medium=customer&utm_source=whatsapp"},
 
         ]
 }
