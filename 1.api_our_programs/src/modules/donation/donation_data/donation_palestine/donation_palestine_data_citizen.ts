@@ -62,6 +62,7 @@ import { save_my_family_in_gaza } from "./save_my_family_in_gaza";
 import { save_my_family_in_Palestine_gaza } from "./save_my_family_in_Palestine_gaza";
 import { seran_palestine } from "./seran_palestine";
 import { yusuf_gaza } from "./yusuf_gaza";
+import { hazem_khilla99 } from "./hazem_khilla99";
 
 
 
@@ -129,7 +130,8 @@ export const donation_palestine_data_citizen: t_donation_data_member[] = [
 	mohammed_qaneeta,
 	randa_lobra,
 	matt_wills,
-	obaidah_treatment
+	obaidah_treatment,
+	hazem_khilla99
 ];
 // !4 wa shi 4:https://www.youtube.com/watch?v=zKF5WmZLMQw&list=PLSeykBQkH3t8_QIRi5HSyGECdA0_zw4qG&index=21
 // !contak this person
