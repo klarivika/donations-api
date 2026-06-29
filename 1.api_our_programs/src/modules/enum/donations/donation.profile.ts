@@ -12,6 +12,7 @@ export enum e_data_citizen{
     app="donate to our app",
     instagram="instagram",
     linkedin="linkedin",
+    threads="threads",
     facebook="facebook",
     link_tree='linktree',
     tiktok='tik-tok',

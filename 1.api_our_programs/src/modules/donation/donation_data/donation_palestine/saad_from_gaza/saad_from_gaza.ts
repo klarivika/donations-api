@@ -15,6 +15,7 @@ const data_profile:t_donation_data_profile={
         links:[
                 
                 {name:e_data_citizen.donorbox,url:"https://www.youtube.com/redirect?event=channel_description&redir_token=QUFFLUhqa1hlbGV4ZWpCQXFPSUZOUmU5VDBzQjhwQ0Exd3xBQ3Jtc0tuSll4anU2Si1ZQUxRR3ZlTkVOZ0dId1QwbzhNZG5JakFkb21MbHd1Y2M4VlFKdWxvN3R2S09SUW1pS2RKRTZrdkI5b1BWdU1aZFZJX1hpOUtMdUs2cG5SS1F3dkdrV01SZHd6S0szN1ZySjhiY0dGbw&q=https%3A%2F%2Fdonorbox.org%2Fplease-stand-with-us"},
+                {name:e_data_citizen.chuffed,url:"https://chuffed.org/project/187285-i-urgently-need-your-support-today"},
 
         ]
 }
