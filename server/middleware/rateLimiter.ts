@@ -9,11 +9,6 @@ export default defineEventHandler(async (event) => {
   // Hanya jalankan rate limiter jika request mengarah ke endpoint /api
   if (req.url?.startsWith('/api')) {
     
-    // Membaca runtime config yang sudah didaftarkan di nuxt.config.ts tadi
-    const config = useRuntimeConfig()
-    const redisUrl = config.redisUrl
-    const redisToken = config.redisToken
-
     const storage = useStorage('cache')
     
     // Mengambil IP Address Client di lingkungan Netlify / Reverse Proxy
@@ -49,7 +44,7 @@ export default defineEventHandler(async (event) => {
     const remainingTTL = Math.max(0, WINDOW_MS - timePassed)
     const ttlSeconds = Math.max(1, Math.ceil(remainingTTL / 1000))
 
-    // Set item ke storage (Memory / Redis Upstash) — TTL harus integer detik untuk Redis EXPIRE
+    // Set item ke storage (memory) dengan TTL dalam detik
     await storage.setItem(cacheKey, currentRequests, { ttl: ttlSeconds })
 
     // Kirim informasi rate limit di header respons
